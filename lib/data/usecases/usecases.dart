@@ -1,1 +1,1 @@
-export './fetch_all_characters.dart';
+export './remote_fetch_characters.dart';
