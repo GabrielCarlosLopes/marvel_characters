@@ -17,24 +17,28 @@ void main() {
   late String offSet;
   late Map map;
 
-  Map mockValidData() {
-    return {
-      'data': {
-        'results': [
-          {
-            'id': faker.guid.random.integer(1000),
-            'name': faker.randomGenerator.string(50),
-            "thumbnail": {"path": faker.internet.httpUrl(), "extension": "jpg"},
-          },
-          {
-            'id': faker.guid.random.integer(1000),
-            'name': faker.randomGenerator.string(50),
-            "thumbnail": {"path": faker.internet.httpUrl(), "extension": "jpg"},
-          }
-        ]
-      }
-    };
-  }
+  Map mockValidData() => {
+        'data': {
+          'results': [
+            {
+              'id': faker.guid.random.integer(1000),
+              'name': faker.randomGenerator.string(50),
+              "thumbnail": {
+                "path": faker.internet.httpUrl(),
+                "extension": "jpg"
+              },
+            },
+            {
+              'id': faker.guid.random.integer(1000),
+              'name': faker.randomGenerator.string(50),
+              "thumbnail": {
+                "path": faker.internet.httpUrl(),
+                "extension": "jpg"
+              },
+            }
+          ]
+        }
+      };
 
   mockRequest() => when(() => httpClient.request<Map>(
         url: any(named: 'url'),
@@ -97,12 +101,10 @@ void main() {
       'should throw unexpected Error if httpClient returns 200 with invalid data',
       () async {
     mockHttpData({
-      'any_key': {'any_key': []}
+      'data': {'results': []}
     });
 
-    final characters = sut.fetch(offSet, url);
-
-    expect(characters, throwsA(DomainError.unexpected));
+    expect(() => sut.fetch(offSet, url), throwsA(DomainError.unexpected));
   });
 
   test('should throw unexpectedError if httpClient returns 404', () async {

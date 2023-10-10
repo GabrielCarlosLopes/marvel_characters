@@ -4,7 +4,7 @@ import 'package:http/http.dart';
 import 'package:marvel_characters/data/usecases/usecases.dart';
 import 'package:marvel_characters/infra/http/http.dart';
 import 'package:marvel_characters/presentations/presenters/presenters.dart';
-import 'package:marvel_characters/ui/ui.dart';
+import 'package:marvel_characters/presentations/routes/routes.dart';
 
 GetIt getIt = GetIt.instance;
 
@@ -13,10 +13,25 @@ void main() {
       getIt.registerSingleton<HttpAdapter>(HttpAdapter(Client()));
 
   final remoteFetchCharacters = getIt.registerSingleton<RemoteFetchCharacters>(
-      RemoteFetchCharacters(httpClient: httpClient));
+    RemoteFetchCharacters(httpClient: httpClient),
+  );
+
+  final remoteFetchComic = getIt.registerSingleton<RemoteFetchComics>(
+    RemoteFetchComics(httpClient: httpClient),
+  );
+
+  final remoteFetchCharacterDetails =
+      getIt.registerSingleton<RemoteFetchCharactersDetails>(
+    RemoteFetchCharactersDetails(httpClient: httpClient),
+  );
 
   getIt.registerSingleton<CharactersStore>(
-      CharactersStore(remoteFetchCharacters));
+    CharactersStore(remoteFetchCharacters),
+  );
+
+  getIt.registerSingleton<CharacterDetailsStore>(
+    CharacterDetailsStore(remoteFetchCharacterDetails, remoteFetchComic),
+  );
 
   runApp(const MyApp());
 }
@@ -26,12 +41,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'Marvel Characters',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
-          useMaterial3: true,
-        ),
-        home: const CharactersPage());
+    return MaterialApp.router(
+      title: 'Marvel Characters',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
+        useMaterial3: true,
+      ),
+      routerConfig: router,
+    );
   }
 }

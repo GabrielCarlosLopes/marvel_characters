@@ -1,20 +1,19 @@
 import 'package:equatable/equatable.dart';
+import 'package:marvel_characters/ui/characters_details/comic_viewmodel.dart';
 
-import '../../domain/entities/entities.dart';
-
-class CharacterDetailsEntity extends Equatable {
+class CharacterDetailsViewModel extends Equatable {
   final int id;
   final String name;
-  final String? description;
+  final String description;
   final String image;
-  final List<ComicEntity>? comics;
+  final List<ComicViewModel>? comics;
 
-  const CharacterDetailsEntity({
+  const CharacterDetailsViewModel({
     required this.id,
     required this.name,
     required this.description,
     required this.image,
-    required this.comics,
+    this.comics,
   });
 
   @override

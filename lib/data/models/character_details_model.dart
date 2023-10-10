@@ -1,39 +1,41 @@
-import '../../data/http/http.dart';
-
-import '../models/models.dart';
+import 'package:marvel_characters/data/http/http.dart';
+import 'package:marvel_characters/data/models/models.dart';
+import 'package:marvel_characters/domain/entities/character_details_entity.dart';
 
 class CharacterDetailsModel {
   final int id;
   final String name;
   final String? description;
   final String image;
-  final List<ComicModel> comics;
+  final List<ComicModel>? comics;
 
   CharacterDetailsModel({
     required this.id,
     required this.name,
-    this.description,
+    required this.description,
     required this.image,
     required this.comics,
   });
-
   factory CharacterDetailsModel.fromJson(Map json) {
-    if (!json.keys
-        .toSet()
-        .containsAll(['id', 'name', 'description', 'image', 'comics'])) {
+    if (!json.keys.toSet().containsAll(
+      ['id', 'name', 'description', 'thumbnail'],
+    )) {
       throw HttpError.invalidData;
     }
     return CharacterDetailsModel(
-      id: json['id'] as int,
-      name: json['name'] as String,
-      description:
-          json['description'] != null ? json['description'] as String : '',
-      image: json['image'] as String,
-      comics: List<ComicModel>.from(
-        (json['comics'] as List<int>).map<ComicModel>(
-          (x) => ComicModel.fromMap(x as Map<String, dynamic>),
-        ),
-      ),
+      id: json['id'],
+      name: json['name'],
+      description: json['description'] ?? '',
+      image: json['thumbnail']['path'] + '.' + json['thumbnail']['extension'],
+      comics: [],
     );
   }
+
+  CharacterDetailsEntity toEntity() => CharacterDetailsEntity(
+        id: id,
+        name: name,
+        description: description,
+        image: image,
+        comics: const [],
+      );
 }
